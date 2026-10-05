@@ -2,6 +2,7 @@ const searchForm = document.querySelector("#search-form");
 const usernameInput = document.querySelector("#username");
 const message = document.querySelector("#message");
 const profile = document.querySelector("#profile");
+const searchButton = document.querySelector("#search-form button");
 
 async function getGithubUser(username) {
   const response = await fetch(`https://api.github.com/users/${username}`);
@@ -21,17 +22,33 @@ async function getGithubUser(username) {
 
 function renderProfile(user) {
   profile.innerHTML = `
-    <img src="${user.avatar_url}" alt="user avatar">
-    <h2>${user.name || user.login}</h2>
-    <p>${user.login}</p>
-    <p>${user.bio || "No bio available."}</p>
-    <p>${user.location || "No location available."}</p>
-    <p>${user.public_repos}</p>
-    <p>Followers: ${user.followers}</p>
-    <p>Following: ${user.following}</p>
-    <a href="${user.html_url}" target="_blank" rel="noopener noreferrer">
-      View GitHub Profile
-    </a>
+    <div class="profile-card">
+      <img src="${user.avatar_url}" alt="${user.login}'s avatar">
+
+      <h2>${user.name || user.login}</h2>
+
+      <p class="username">@${user.login}</p>
+
+      <p class="bio">
+        ${user.bio || "No bio available."}
+      </p>
+
+      <p>${user.location || "No location available."}</p>
+
+      <div class="stats">
+        <p>Repositories: ${user.public_repos}</p>
+        <p>Followers: ${user.followers}</p>
+        <p>Following: ${user.following}</p>
+      </div>
+
+      <a
+        href="${user.html_url}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        View GitHub Profile
+      </a>
+    </div>
   `;
 }
 
@@ -46,6 +63,7 @@ searchForm.addEventListener("submit", async function (event) {
   }
 
   message.textContent = `Searching for ${username}...`;
+  searchButton.disabled = true;
   profile.textContent = "";
 
   try {
@@ -58,5 +76,7 @@ searchForm.addEventListener("submit", async function (event) {
   } catch (error) {
     console.error("Error fetching GitHub user:", error);
     message.textContent = error.message;
+  } finally {
+    searchButton.disabled = false;
   }
 });
