@@ -33,7 +33,7 @@ searchForm.addEventListener("submit", async function (event) {
     <h2>${user.name || user.login}</h2>
     <p>${user.login}</p>
     <p>${user.bio || "No bio available."} </p> 
-    <p>${user.location}</p>
+    <p>${user.location || "No location available."}</p>
     <p>${user.public_repos}</p>
     <p> Followers: ${user.followers}</p>
     <p> Following: ${user.following}</p>
