@@ -20,6 +20,20 @@ async function getGithubUser(username) {
   return user;
 }
 
+async function getGithubRepositories(username) {
+  const response = await fetch(
+    `https://api.github.com/users/${username}/repos?sort=updated&per_page=5`,
+  );
+
+  if (!response.ok) {
+    throw new Error("Could not load repositories.");
+  }
+
+  const repositories = await response.json();
+
+  return repositories;
+}
+
 function formatDate(date) {
   return new Date(date).toLocaleDateString();
 }
@@ -32,7 +46,7 @@ function showEmptyState() {
   `;
 }
 
-function renderProfile(user) {
+function renderProfile(user, repositories) {
   profile.innerHTML = `
     <div class="profile-card">
       <img src="${user.avatar_url}" alt="${user.login}'s avatar">
@@ -74,6 +88,35 @@ function renderProfile(user) {
       >
         View GitHub Profile
       </a>
+<h3>Latest Repositories</h3>
+
+<div class="repositories">
+  ${
+    repositories.length === 0
+      ? `<p class="no-repositories">No public repositories available.</p>`
+      : repositories
+          .map(
+            (repository) => `
+              <article class="repository">
+                <h4>${repository.name}</h4>
+
+                <p>
+                  ${repository.description || "No description available."}
+                </p>
+
+                <a
+                  href="${repository.html_url}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View Repository
+                </a>
+              </article>
+            `,
+          )
+          .join("")
+  }
+</div>
     </div>
   `;
 }
@@ -94,10 +137,12 @@ searchForm.addEventListener("submit", async function (event) {
   try {
     const user = await getGithubUser(username);
 
+    const repositories = await getGithubRepositories(username);
+
     usernameInput.value = "";
     message.textContent = "";
 
-    renderProfile(user);
+    renderProfile(user, repositories);
   } catch (error) {
     console.error("Error fetching GitHub user:", error);
     message.textContent = error.message;
