@@ -139,3 +139,38 @@ button:disabled {
   color: #8b949e;
   cursor: not-allowed;
 }
+
+.profile-info {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  color: #8b949e;
+}
+
+.stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+.stat {
+  min-width: 120px;
+  padding: 12px;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat span {
+  color: #8b949e;
+  font-size: 0.85rem;
+}
+
+.stat strong {
+  font-size: 1.25rem;
+}

@@ -20,6 +20,10 @@ async function getGithubUser(username) {
   return user;
 }
 
+function formatDate(date) {
+  return new Date(date).toLocaleDateString();
+}
+
 function renderProfile(user) {
   profile.innerHTML = `
     <div class="profile-card">
@@ -33,13 +37,27 @@ function renderProfile(user) {
         ${user.bio || "No bio available."}
       </p>
 
-      <p>${user.location || "No location available."}</p>
+<div class="profile-info">
+  <p>${user.location || "No location available."}</p>
+  <p>Joined GitHub: ${formatDate(user.created_at)}</p>
+</div>
 
-      <div class="stats">
-        <p>Repositories: ${user.public_repos}</p>
-        <p>Followers: ${user.followers}</p>
-        <p>Following: ${user.following}</p>
-      </div>
+<div class="stats">
+  <div class="stat">
+    <span>Repositories</span>
+    <strong>${user.public_repos}</strong>
+  </div>
+
+  <div class="stat">
+    <span>Followers</span>
+    <strong>${user.followers}</strong>
+  </div>
+
+  <div class="stat">
+    <span>Following</span>
+    <strong>${user.following}</strong>
+  </div>
+</div>
 
       <a
         href="${user.html_url}"
