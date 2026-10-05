@@ -24,6 +24,14 @@ function formatDate(date) {
   return new Date(date).toLocaleDateString();
 }
 
+function showEmptyState() {
+  profile.innerHTML = `
+    <div class="empty-state">
+      <p>Search for a GitHub username to see their profile.</p>
+    </div>
+  `;
+}
+
 function renderProfile(user) {
   profile.innerHTML = `
     <div class="profile-card">
@@ -82,7 +90,6 @@ searchForm.addEventListener("submit", async function (event) {
 
   message.textContent = `Searching for ${username}...`;
   searchButton.disabled = true;
-  profile.textContent = "";
 
   try {
     const user = await getGithubUser(username);
@@ -98,3 +105,5 @@ searchForm.addEventListener("submit", async function (event) {
     searchButton.disabled = false;
   }
 });
+
+showEmptyState();
