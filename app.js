@@ -28,6 +28,8 @@ searchForm.addEventListener("submit", async function (event) {
 
     const user = await response.json();
 
+    message.textContent = "";
+
     profile.innerHTML = `
     <img src="${user.avatar_url}" alt="user avatar">
     <h2>${user.name || user.login}</h2>
@@ -42,5 +44,6 @@ searchForm.addEventListener("submit", async function (event) {
     `;
   } catch (error) {
     console.error("Error fetching GitHub user:", error);
+    message.textContent = error.message;
   }
 });
