@@ -3,6 +3,22 @@ const usernameInput = document.querySelector("#username");
 const message = document.querySelector("#message");
 const profile = document.querySelector("#profile");
 
+async function getGithubUser(username) {
+  const response = await fetch(`https://api.github.com/users/${username}`);
+
+  if (!response.ok) {
+    throw new Error(
+      response.status === 404
+        ? "GitHub user not found."
+        : "Something went wrong. Please try again.",
+    );
+  }
+
+  const user = await response.json();
+
+  return user;
+}
+
 searchForm.addEventListener("submit", async function (event) {
   event.preventDefault();
 
@@ -14,20 +30,12 @@ searchForm.addEventListener("submit", async function (event) {
   }
 
   message.textContent = `Searching for ${username}...`;
+  profile.textContent = "";
 
   try {
-    const response = await fetch(`https://api.github.com/users/${username}`);
+    const user = await getGithubUser(username);
 
-    if (!response.ok) {
-      throw new Error(
-        response.status === 404
-          ? "GitHub user not found."
-          : "Something went wrong. Please try again.",
-      );
-    }
-
-    const user = await response.json();
-
+    usernameInput.value = "";
     message.textContent = "";
 
     profile.innerHTML = `
