@@ -35,6 +35,9 @@ searchForm.addEventListener("submit", async function (event) {
     <p>${user.bio || "No bio available."} </p> 
     <p>${user.location}</p>
     <p>${user.public_repos}</p>
+    <p> Followers: ${user.followers}</p>
+    <p> Following: ${user.following}</p>
+    <a href="${user.html_url}" target="_blank" rel="noopener noreferrer"> View GitHub Profile </a>
     
     `;
   } catch (error) {
