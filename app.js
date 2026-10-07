@@ -3,8 +3,11 @@ const usernameInput = document.querySelector("#username");
 const message = document.querySelector("#message");
 const profile = document.querySelector("#profile");
 const searchButton = document.querySelector("#search-form button");
+const sortRepositories = document.querySelector("#sort-repositories");
+
 let currentPage = 1;
 let currentUsername = "";
+let currentRepositories = [];
 
 async function getGithubUser(username) {
   const response = await fetch(`https://api.github.com/users/${username}`);
@@ -48,8 +51,46 @@ function showEmptyState() {
   `;
 }
 
+sortRepositories.addEventListener("change", function () {
+  const repositoriesContainer = document.querySelector(".repositories");
+
+  if (!repositoriesContainer) {
+    return;
+  }
+
+  repositoriesContainer.innerHTML =
+    currentRepositories.length === 0
+      ? `<p class="no-repositories">No public repositories available.</p>`
+      : renderRepositories(currentRepositories);
+});
+
+function sortRepositoriesList(repositories, sortType) {
+  const sortedRepositories = [...repositories];
+
+  if (sortType === "stars") {
+    sortedRepositories.sort((a, b) => b.stargazers_count - a.stargazers_count);
+  }
+
+  if (sortType === "forks") {
+    sortedRepositories.sort((a, b) => b.forks_count - a.forks_count);
+  }
+
+  if (sortType === "updated") {
+    sortedRepositories.sort(
+      (a, b) => new Date(b.updated_at) - new Date(a.updated_at),
+    );
+  }
+
+  return sortedRepositories;
+}
+
 function renderRepositories(repositories) {
-  return repositories
+  const sortedRepositories = sortRepositoriesList(
+    repositories,
+    sortRepositories.value,
+  );
+
+  return sortedRepositories
     .map(
       (repository) => `
         <article class="repository">
@@ -166,6 +207,7 @@ searchForm.addEventListener("submit", async function (event) {
 
   currentUsername = username;
   currentPage = 1;
+  currentRepositories = [];
 
   message.textContent = `Searching for ${username}...`;
   searchButton.disabled = true;
@@ -174,6 +216,7 @@ searchForm.addEventListener("submit", async function (event) {
     const user = await getGithubUser(username);
 
     const repositories = await getGithubRepositories(username, 5, 1);
+    currentRepositories = repositories;
 
     usernameInput.value = "";
     message.textContent = "";
@@ -194,12 +237,17 @@ searchForm.addEventListener("submit", async function (event) {
           nextPage,
         );
 
+        currentRepositories.push(...repositories);
+
+        if (repositories.length === 0) {
+          loadMoreButton.style.display = "none";
+          return;
+        }
+
         const repositoriesContainer = document.querySelector(".repositories");
 
-        repositoriesContainer.insertAdjacentHTML(
-          "beforeend",
-          renderRepositories(repositories),
-        );
+        repositoriesContainer.innerHTML =
+          renderRepositories(currentRepositories);
 
         currentPage = nextPage;
       } catch (error) {
