@@ -116,6 +116,16 @@ function renderProfile(user, repositories) {
                   Forks: ${repository.forks_count}
                 </p>
 
+                <div class="repository-topics">
+                  ${
+                    repository.topics.length === 0
+                      ? `<span class="no-topics">No topics</span>`
+                      : repository.topics
+                          .map((topic) => `<span class="topic">${topic}</span>`)
+                          .join("")
+                  }
+                </div>
+
                 <a
                   href="${repository.html_url}"
                   target="_blank"
