@@ -104,6 +104,18 @@ function renderProfile(user, repositories) {
                   ${repository.description || "No description available."}
                 </p>
 
+                <p class="repository-language">
+                  Language: ${repository.language || "Not specified"}
+                </p>
+
+                <p class="repository-stars">
+                  Stars: ${repository.stargazers_count}
+                </p>
+
+                <p class="repository-forks">
+                  Forks: ${repository.forks_count}
+                </p>
+
                 <a
                   href="${repository.html_url}"
                   target="_blank"

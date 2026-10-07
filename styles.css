@@ -240,3 +240,18 @@ button:disabled {
   margin-top: 28px;
   margin-bottom: 12px;
 }
+
+.no-repositories {
+  color: #8b949e;
+  padding: 16px 0;
+}
+
+.repository-language,
+.repository-stars,
+.repository-forks {
+  display: inline-block;
+  margin-right: 16px;
+  margin-bottom: 12px;
+  color: #8b949e;
+  font-size: 0.9rem;
+}
