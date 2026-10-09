@@ -8,6 +8,7 @@ const sortRepositories = document.querySelector("#sort-repositories");
 let currentPage = 1;
 let currentUsername = "";
 let currentRepositories = [];
+let searchId = 0;
 
 async function getGithubUser(username) {
   const response = await fetch(`https://api.github.com/users/${username}`);
@@ -200,6 +201,9 @@ ${
 searchForm.addEventListener("submit", async function (event) {
   event.preventDefault();
 
+  searchId++;
+  const currentSearchId = searchId;
+
   const username = usernameInput.value.trim();
 
   if (username === "") {
@@ -218,7 +222,16 @@ searchForm.addEventListener("submit", async function (event) {
   try {
     const user = await getGithubUser(username);
 
+    if (currentSearchId !== searchId) {
+      return;
+    }
+
     const repositories = await getGithubRepositories(username, 5, 1);
+
+    if (currentSearchId !== searchId) {
+      return;
+    }
+
     currentRepositories = repositories;
 
     usernameInput.value = "";
@@ -269,11 +282,15 @@ searchForm.addEventListener("submit", async function (event) {
       });
     }
   } catch (error) {
-    console.error("Error fetching GitHub user:", error);
-    message.textContent = error.message;
+    if (currentSearchId === searchId) {
+      console.error("Error fetching GitHub user:", error);
+      message.textContent = error.message;
+    }
   } finally {
-    searchButton.disabled = false;
-    searchButton.textContent = "Search";
+    if (currentSearchId === searchId) {
+      searchButton.disabled = false;
+      searchButton.textContent = "Search";
+    }
   }
 });
 
