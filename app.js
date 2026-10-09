@@ -213,6 +213,7 @@ searchForm.addEventListener("submit", async function (event) {
 
   message.textContent = `Searching for ${username}...`;
   searchButton.disabled = true;
+  searchButton.textContent = "Searching...";
 
   try {
     const user = await getGithubUser(username);
@@ -226,50 +227,53 @@ searchForm.addEventListener("submit", async function (event) {
     renderProfile(user, repositories);
     const loadMoreButton = document.querySelector("#load-more");
 
-    loadMoreButton.addEventListener("click", async function () {
-      loadMoreButton.disabled = true;
-      loadMoreButton.textContent = "Loading...";
+    if (loadMoreButton) {
+      loadMoreButton.addEventListener("click", async function () {
+        loadMoreButton.disabled = true;
+        loadMoreButton.textContent = "Loading...";
 
-      try {
-        const nextPage = currentPage + 1;
+        try {
+          const nextPage = currentPage + 1;
 
-        const repositories = await getGithubRepositories(
-          currentUsername,
-          5,
-          nextPage,
-        );
+          const repositories = await getGithubRepositories(
+            currentUsername,
+            5,
+            nextPage,
+          );
 
-        currentRepositories.push(...repositories);
+          currentRepositories.push(...repositories);
 
-        if (repositories.length === 0) {
-          loadMoreButton.style.display = "none";
-          loadMoreButton.disabled = true;
-          return;
+          if (repositories.length === 0) {
+            loadMoreButton.style.display = "none";
+            loadMoreButton.disabled = true;
+            return;
+          }
+
+          const repositoriesContainer = document.querySelector(".repositories");
+
+          repositoriesContainer.innerHTML =
+            renderRepositories(currentRepositories);
+
+          const repositoryCount = document.querySelector("#repository-count");
+
+          repositoryCount.textContent = currentRepositories.length;
+
+          currentPage = nextPage;
+        } catch (error) {
+          console.error("Error loading more repositories:", error);
+          message.textContent = error.message;
+        } finally {
+          loadMoreButton.disabled = false;
+          loadMoreButton.textContent = "Load More";
         }
-
-        const repositoriesContainer = document.querySelector(".repositories");
-
-        repositoriesContainer.innerHTML =
-          renderRepositories(currentRepositories);
-
-        const repositoryCount = document.querySelector("#repository-count");
-
-        repositoryCount.textContent = currentRepositories.length;
-
-        currentPage = nextPage;
-      } catch (error) {
-        console.error("Error loading more repositories:", error);
-        message.textContent = error.message;
-      } finally {
-        loadMoreButton.disabled = false;
-        loadMoreButton.textContent = "Load More";
-      }
-    });
+      });
+    }
   } catch (error) {
     console.error("Error fetching GitHub user:", error);
     message.textContent = error.message;
   } finally {
     searchButton.disabled = false;
+    searchButton.textContent = "Search";
   }
 });
 
