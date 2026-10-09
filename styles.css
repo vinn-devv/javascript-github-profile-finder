@@ -291,3 +291,15 @@ button:disabled {
 #load-more:hover {
   background: #21262d;
 }
+
+#message {
+  min-height: 24px;
+  margin: 12px 0;
+  color: #58a6ff;
+  font-size: 14px;
+}
+
+#message.error {
+  color: #f85149;
+  font-weight: 600;
+}

@@ -215,6 +215,7 @@ searchForm.addEventListener("submit", async function (event) {
   currentPage = 1;
   currentRepositories = [];
 
+  message.classList.remove("error");
   message.textContent = `Searching for ${username}...`;
   searchButton.disabled = true;
   searchButton.textContent = "Searching...";
@@ -284,6 +285,7 @@ searchForm.addEventListener("submit", async function (event) {
   } catch (error) {
     if (currentSearchId === searchId) {
       console.error("Error fetching GitHub user:", error);
+      message.classList.add("error");
       message.textContent = error.message;
     }
   } finally {
