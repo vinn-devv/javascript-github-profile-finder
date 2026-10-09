@@ -178,7 +178,7 @@ function renderProfile(user, repositories) {
         View GitHub Profile
       </a>
 
-      <h3>Latest Repositories</h3>
+<h3>Latest Repositories (<span id="repository-count">${repositories.length}</span>)</h3>
 
       <div class="repositories">
         ${
@@ -188,9 +188,11 @@ function renderProfile(user, repositories) {
         }
       </div>
 
-      <button type="button" id="load-more">
-        Load More
-      </button>
+${
+  user.public_repos === 0
+    ? ""
+    : `<button type="button" id="load-more">Load More</button>`
+}
     </div>
   `;
 }
@@ -241,6 +243,7 @@ searchForm.addEventListener("submit", async function (event) {
 
         if (repositories.length === 0) {
           loadMoreButton.style.display = "none";
+          loadMoreButton.disabled = true;
           return;
         }
 
@@ -248,6 +251,10 @@ searchForm.addEventListener("submit", async function (event) {
 
         repositoriesContainer.innerHTML =
           renderRepositories(currentRepositories);
+
+        const repositoryCount = document.querySelector("#repository-count");
+
+        repositoryCount.textContent = currentRepositories.length;
 
         currentPage = nextPage;
       } catch (error) {
