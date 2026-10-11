@@ -2,6 +2,10 @@
 
 A simple web application that lets users search for GitHub profiles and explore their public repositories using the GitHub API.
 
+## Live Demo
+
+[Open GitHub Profile Finder](https://vinn-devv.github.io/javascript-github-profile-finder/)
+
 ## Features
 
 - Search GitHub users by username
